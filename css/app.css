@@ -72,7 +72,7 @@ input {
     border: none;
     background: #fff;
     animation: collapse-box 0.7s ease-in-out;
-    opacity: 0.8;
+    opacity: 1;
     overflow: hidden;
 }
 
@@ -87,7 +87,7 @@ input {
 .result-box .text {
     width: 90%;
     top: 50px;
-    height: 80%;
+    height: calc(100% - 80px);
     margin: 0 auto;
     /*background: green;*/
     position: relative;
@@ -97,6 +97,7 @@ input {
 
 .result-box.expanded {
     animation: expand-box 0.7s ease-in-out forwards;
+    opacity: 0.8;
 }
 
 @keyframes expand-box {

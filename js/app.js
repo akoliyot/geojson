@@ -60,9 +60,6 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('googleMap'), {
         // Big Ben
         center: {lat: 51.500358, lng: -0.125506},
-
-        // Calicut
-        // center: {lat: 11.264076, lng: 75.777509},
         zoom: 16,
         mapTypeId: 'terrain'
     });
