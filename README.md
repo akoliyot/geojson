@@ -1,5 +1,5 @@
 # geojson
-An application that uses Google Maps to draw a marker and a circle around matching locations for an address and to convert the polygons representing the circles into GeoJSON data.
+An application that uses Google Maps to draw a marker and a circle around all matching locations for an address/place and to convert the polygons representing the circles into GeoJSON data.
 
 ## Getting started
 1. Download/clone the repo to your system. 
