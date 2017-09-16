@@ -1,17 +1,31 @@
 var map, circlePath;
 var markers = [], circles = [];
 
+const tipRadiusSlider = tippy('#radiusSlider', {
+    dynamicTitle: true,
+    position: 'bottom',
+    arrow: true,
+    animation: 'shift',
+    size: 'small'
+});
+const el = document.querySelector('#radiusSlider');
+const popper = tipRadiusSlider.getPopperElement(el)
+
 // Run this function when radiusSlider is being moved. 
-function updateRadius(sliderValue) {
-    var mile = 1609.34;
-    console.log('Updated circle to a ' + sliderValue + ' mile radius');
+function updateRadius(slider) {
+    console.log(slider);
+    slider.title = 'Radius (in miles): ' + slider.value;
 
-    // Update the radius of the circle.
-    circles.forEach(function(circle) {
-        circle.setRadius(mile * sliderValue);
-    });
+    tipRadiusSlider.show(popper);
+    // var mile = 1609.34;
+    // console.log('Updated circle to a ' + sliderValue + ' mile radius');
 
-    generateGeoJSON();
+    // // Update the radius of the circle.
+    // circles.forEach(function(circle) {
+    //     circle.setRadius(mile * sliderValue);
+    // });
+
+    // generateGeoJSON();
 }
 
 // Initialize Google Map.
