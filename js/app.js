@@ -1,6 +1,26 @@
 var map, circlePath;
 var markers = [], circles = [];
 
+/* ================================================
+// # Event handlers
+// ============================================= */
+// Toggle GeoJSON viewer. 
+document.querySelector('#toggleResult').addEventListener('click', function() {
+    var resultBox = document.querySelector('.result-box');
+    resultBox.classList.remove('no-animation');
+    resultBox.classList.toggle('expanded');
+});
+
+/* ================================================
+// # Tippy (Tooltip) initializations
+// ============================================= */
+tippy('.result-box .action', {
+    position: 'left',
+    arrow: true,
+    animation: 'shift',
+    size: 'small'
+});
+
 const tipRadiusSlider = tippy('#radiusSlider', {
     dynamicTitle: true,
     position: 'bottom',
@@ -11,27 +31,33 @@ const tipRadiusSlider = tippy('#radiusSlider', {
 const el = document.querySelector('#radiusSlider');
 const popper = tipRadiusSlider.getPopperElement(el)
 
-// Run this function when radiusSlider is being moved. 
+/* ================================================
+// # Update circle radius
+// ============================================= */
 function updateRadius(slider) {
     console.log(slider);
     slider.title = 'Radius (in miles): ' + slider.value;
 
     tipRadiusSlider.show(popper);
-    // var mile = 1609.34;
-    // console.log('Updated circle to a ' + sliderValue + ' mile radius');
 
-    // // Update the radius of the circle.
-    // circles.forEach(function(circle) {
-    //     circle.setRadius(mile * sliderValue);
-    // });
+    var mile = 1609.34;
+    console.log('Updated circle to a ' + slider.value + ' mile radius');
 
-    // generateGeoJSON();
+    // Update the radius of the circle.
+    circles.forEach(function(circle) {
+        circle.setRadius(mile * slider.value);
+    });
+
+    generateGeoJSON();
 }
 
-// Initialize Google Map.
+
+/* ================================================
+// # Initialize Google Map.
+// ============================================= */
 function initMap() {
     // Basic configurations.
-    map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('googleMap'), {
         // Big Ben
         center: {lat: 51.500358, lng: -0.125506},
 
@@ -58,6 +84,9 @@ function initMap() {
     });
 }
 
+/* ================================================
+// # Helper functions.
+// ============================================= */
 function handlePlaceSelection(searchBox) {
     // Get all places associated with the selection. 
     var places = searchBox.getPlaces();
@@ -97,13 +126,8 @@ function handlePlaceSelection(searchBox) {
         } else {
             bounds.extend(place.geometry.location);
         }
-
-        
     });
 
-    // 
-    // Get GeoJSON.
-    // 
     generateGeoJSON();
     map.fitBounds(bounds);
 
@@ -114,25 +138,9 @@ function handlePlaceSelection(searchBox) {
 }
 
 function generateGeoJSON() {
-    // var geoJson = {
-    //  "type": 'FeatureCollection',
-    //  "features": [
-    //      {
-    //          "type": "Feature",
-    //          "properties": {},
-    //          "geometry": {
-    //              "type": "Polygon",
-    //              "coordinates": [[]]
-    //          }
-    //      }
-    //  ]
-    // };
-
     var geoJson = {
         "type": 'FeatureCollection',
-        "features": [
-        
-        ]
+        "features": []
     };
 
     circles.forEach(function(circle) {
@@ -163,7 +171,6 @@ function generateGeoJSON() {
 
     });
 
-    
     var text = document.querySelector('#geoJsonResult');
     text.innerHTML = JSON.stringify(geoJson);
     console.log('Generated GeoJSON');
@@ -191,8 +198,6 @@ function clearCircles() {
     circles = [];
     console.log('Circles cleared');
 }
-
-
 
 function getCirclePath(circle) {
     var numPts = 512;

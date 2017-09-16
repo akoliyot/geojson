@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GeoJSON Demo</title>
+    <title>Draw circles around one or more location matches</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -10,185 +10,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Tippy (Tooltips) -->
     <link rel="stylesheet" href="css/tippy.css">
-
-    <style>
-    #map {
-        min-height: 100%;
-        width: 100%;
-        height: 100%;
-        display: inline-block;
-        float: left;
-    }
-
-    input, .box {
-        box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
-    }
-
-    input {
-        height: 30px;
-        margin-top: 10px;
-        border: none;
-        color: rgb(86, 86, 86);
-        background-color: rgb(255, 255, 255);
-        padding: 8px;
-        border-bottom-right-radius: 2px;
-        border-top-right-radius: 2px;
-        min-width: 230px;
-    }
-
-    .no-animation {
-        animation: none !important;
-    }
-
-    #radiusSlider {
-        position: absolute;
-        left: 363px;
-    }
-
-    /* Optional: Makes the sample page fill the window. */
-    * {
-        box-sizing: border-box;
-    } 
-
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    body {
-        font-family: Roboto, Arial, sans-serif;
-    }
-
-    .result-box {
-        position: absolute;
-        right: 45px;
-        height: 25px;
-        width: 25px;
-        top: 10px;
-        padding: 0px;
-        border: none;
-        background: #fff;
-        animation: collapse-box 0.7s ease-in-out;
-        opacity: 0.8;
-        overflow: hidden;
-
-        /*For testing*/
-        /*width: 580px;
-        height: 90%;*/
-    }
-
-    .result-box .action {
-        position: absolute;
-        top: 3px;
-        right: 6px;
-        cursor: pointer;
-        color: #866262
-    }
-
-    .result-box .text {
-        width: 90%;
-        top: 50px;
-        height: 80%;
-        margin: 0 auto;
-        /*background: green;*/
-        position: relative;
-        /*opacity: 0.3;*/
-        overflow: scroll;
-    }
-
-    .content-wrapper {
-        padding: 30px;
-    }
-
-    .result-box.expanded {
-        animation: expand-box 0.7s ease-in-out forwards;
-    }
-
-    @keyframes expand-box {
-        35% {
-            width: 560px;
-            height: 25px;
-        }
-
-        100% {
-            width: 560px;
-            height: 90%;
-        }
-    }
-
-    @keyframes collapse-box {
-        0% {
-            width: 560px;
-            height: 90%;
-        }
-
-        35% {
-            height: 25px;
-            width: 560px;
-        }
-
-        100% {
-            height: 25px;
-            width: 25px;
-        }
-    }
-
-    .hidden {
-        display: none;
-    }
-
-
-
-
-</style>
-
+    <!-- App CSS -->
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-    <div id="map"></div>
+    <div id="googleMap" class="map"></div>
     <input id="addressInput" type="text">
-    <input id="radiusSlider" class="" title="Radius (in miles): 1" type="range" min="1" max="10" step="1" value="1" oninput="updateRadius(this);">
-
-    
+    <input id="radiusSlider" class="radius-slider hidden" title="Radius (in miles): 1" type="range" min="1" max="10" step="1" value="1" oninput="updateRadius(this);">
 
     <div class="box result-box no-animation hidden">
         <span id="toggleResult" class="action" title="Click to view GeoJSON">
             <span class="fa fa-file-text"></span>
         </span>
-            <div id="geoJsonResult" class="text"></div>    
+        <div id="geoJsonResult" class="text"></div>    
     </div>
-    
 
+    <!-- Google Map -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUpIAZYCFy-BQqVXjVVqHxNW8EYzUWx6Q&callback=initMap&libraries=places,geometry"
     async defer></script>
+    <!-- Tippy (Tooltips) -->
     <script src="js/tippy.min.js"></script>
+    <!-- App JS -->
     <script src="js/app.js"></script>
-
-
-
-    <script>
-        document.querySelector('#toggleResult').addEventListener('click', function() {
-            var resultBox = document.querySelector('.result-box');
-            resultBox.classList.remove('no-animation');
-            resultBox.classList.toggle('expanded');
-        });
-
-        tippy('.result-box .action', {
-            position: 'left',
-            arrow: true,
-            animation: 'shift',
-            size: 'small'
-        });
-
-        
-
-        // tippy('#radiusSlider', {
-        //     position: 'left',
-        //     arrow: true,
-        //     animation: 'shift',
-        //     size: 'small',
-        //     dynamicTitle: true
-        // });
-    </script>
 </body>
 </html>
