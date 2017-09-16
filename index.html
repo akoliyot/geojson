@@ -3,209 +3,78 @@
 <head>
 	<meta charset="UTF-8">
 	<title>GeoJSON Demo</title>
+	
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
 	<style>
-	      /* Always set the map height explicitly to define the size of the div
-	      * element that contains the map. */
-	      #map {
-	      	height: 90%;
-	      }
-	      /* Optional: Makes the sample page fill the window. */
-	      html, body {
-	      	height: 100%;
-	      	margin: 0;
-	      	padding: 0;
-	      }
-	  </style>
+  		/* Always set the map height explicitly to define the size of the div
+  		* element that contains the map. */
 
-	</head>
-	<body>
-		<div id="map"></div>
-		<input id="addressInput" type="text">
+  		#map, 
+  		#geoJsonResult {
+  			min-height: 100%;
+  			display: inline-block;
+  			float: left;
+  		}
 
-		<script>
-			var map;
+  		#map {
+  			width: 70%;
+  		}
 
-			// Function to initialize the map.
-			function initMap() {
+  		#geoJsonResult {
+  			width: 30%;
+  			background: #fff;
+  			padding: 30px;
+  		}
 
-				// Basic configurations.
-				map = new google.maps.Map(document.getElementById('map'), {
-					center: {lat: 52.511633, lng: 13.347713},
-					zoom: 13,
-					mapTypeId: 'terrain'
-				});
+  		input {
+  			height: 30px;
+			margin-top: 10px;
+  			border: none;
+  			color: rgb(86, 86, 86);
+			background-color: rgb(255, 255, 255);
+			padding: 8px;
+			border-bottom-right-radius: 2px;
+			border-top-right-radius: 2px;
+			box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
+			min-width: 230px;
+  		}
 
-				// Add SearchBox to autocompleting search terms.
-				var addressInput = document.getElementById('addressInput');
-				var searchBox = new google.maps.places.SearchBox(addressInput);
-				map.controls[google.maps.ControlPosition.TOP_LEFT].push(addressInput);
+  		#radiusSlider {
+  			position: absolute;
+  			left: 363px;
+  		}
 
-				// Bias the SearchBox results towards current map's viewport.
-				map.addListener('bounds_changed', function() {
-					console.log('Bounds = ');
-					console.log(map.getBounds());
-					searchBox.setBounds(map.getBounds());
-				}); 
+  		/* Optional: Makes the sample page fill the window. */
+		* {
+			box-sizing: border-box;
+		} 
 
-				// Event listener to handle selection of an item from the 
-				// search dropdown.
-				var markers = [];
-				var circles = [];
-				searchBox.addListener('places_changed', function() {
-					var places = searchBox.getPlaces();
+  		html, body {
+  			height: 100%;
+  			margin: 0;
+  			padding: 0;
+  		}
 
-					if(places.length == 0) {
-						console.log('No matching places found');
-						return;
-					}
+  		body {
+  			font-family: Roboto, Arial, sans-serif;
+  		}
+  	</style>
 
-					// Clear out the old markers.
-					markers.forEach(function(marker) {
-						marker.setMap(null);
-					});
-					markers = [];
+  </head>
+  <body>
+  	<div id="map"></div>
+  	<input id="addressInput" type="text">
+  	<input id="radiusSlider" type="range" min="1" max="10" step="1" value="1" oninput="updateRadius(this.value);">
 
-					// Clear out the old circles. 
-					circles.forEach(function(circle) {
-						circle.setMap(null);
-					})
-					circles = [];
+	<div id="geoJsonResult">
+		
+	</div>
+  	
 
-
-					var bounds = new google.maps.LatLngBounds();
-					places.forEach(function(place) {
-						console.log(place);
-						console.log('Viewport: ' + place.geometry.viewport);
-						console.log('Location: ' + place.geometry.location);
-
-						// Create a marker for the current place.
-						markers.push(new google.maps.Marker({
-							position: place.geometry.location,
-							map: map,
-							title: place.name
-						}));
-
-						if (place.geometry.viewport) {
-							bounds.union(place.geometry.viewport);
-						} else {
-							bounds.extend(place.geometry.location);
-						}
-
-						// Draw a circle around each location marker.
-						circles.push(new google.maps.Circle({
-							strokeColor: '#FF0000',
-							strokeOpacity: 0.8,
-							strokeWeight: 2,
-							fillColor: 'blue',
-							fillOpacity: 0.35,
-							map: map,
-							center: place.geometry.location,
-							radius: 196412
-						}));
-
-						circles.forEach(function(circle) {
-							circle.setRadius(226412);
-						});
-					});
-					map.fitBounds(bounds);
-				});
-
-				
-
-			// 
-	        // Sample code for drawing a circle around a city.
-	        // 
-	        // var vancouver = {
-	        // 	center: {lat: 49.25, lng: -123.1},
-	        // 	population: 603502
-	        // }
-
-          	// Add a circle to the city. 
-          	// var cityCircle = new google.maps.Circle({
-          	// 	strokeColor: '#FF0000',
-          	// 	strokeOpacity: 0.8,
-          	// 	strokeWeight: 2,
-          	// 	fillColor: 'blue',
-          	// 	fillOpacity: 0.35,
-          	// 	map: map,
-          	// 	center: vancouver.center,
-          	// 	radius: 196412
-          	// });
-
-
-			// 
-			// Adding an address input and displaying a marker on the map
-			// for the selected address.
-			// 
-			
-
-			
-
-			// var markers = [];
-			// // Listen for the event fired when a user selects a prediction and 
-			// // retrieve more details for that place.
-			// searchBox.addListener('places_changed', function() {
-			// 	var places = searchBox.getPlaces();
-
-			// 	if(places.length == 0) {
-			// 		return;
-			// 	}
-
-   //      		// Clear out the old markers.
-   //      		markers.forEach(function (marker) {
-   //      			marker.setMap(null);
-   //      		});
-
-   //      		markers = [];
-
-   //      		var bounds = new google.maps.LatLngBounds();
-
-   //      		places.forEach(function(place) {
-   //      			if(!place.geometry) {
-   //      				console.log('Returned place contains no geometry');
-   //      				return; 
-   //      			}
-
-   //      			var icon = {
-   //      				url: place.icon,
-   //      				size: new google.maps.Size(71, 71),
-   //      				origin: new google.maps.Point(0, 0),
-   //      				anchor: new google.maps.Point(17, 34),
-   //      				scaledSize: new google.maps.Size(25, 25),
-   //      			};
-
-   //          		// Create marker for each place.
-   //          		markers.push(new google.maps.Marker({
-   //          			map: map,
-   //          			icon: icon,
-   //          			title: place.name,
-   //          			position: place.geometry.location
-   //          		}));
-
-   //          		var circle = new google.maps.Circle({
-   //          			map: map,
-   //          			radius: 10000,
-   //          			fillColor: '#AA0000'
-   //          		});
-
-   //          		console.log(markers[0]);
-   //          		circle.bindTo('center', markers[0], 'position');
-
-   //          		if(place.geometry.viewport) {
-   //          			bounds.union(place.geometry.viewport);
-   //          		} else {
-   //          			bounds.extend(place.geometry.location);
-   //          		}
-   //          	});
-   //      		map.fitBounds(bounds);
-   //      	});
-		}
-
-
-	</script>
-
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUpIAZYCFy-BQqVXjVVqHxNW8EYzUWx6Q&callback=initMap&libraries=places"
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDUpIAZYCFy-BQqVXjVVqHxNW8EYzUWx6Q&callback=initMap&libraries=places,geometry"
 	async defer></script>
-
+	<script src="js/app.js"></script>
 </body>
 </html>
